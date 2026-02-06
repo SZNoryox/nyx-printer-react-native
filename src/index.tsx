@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native';
 
-export interface PrintextStyle {
+export interface PrintTextStyle {
   textSize?: number;
   underline?: boolean;
   textScaleX?: number;
@@ -102,14 +102,14 @@ type NyxPrinterType = {
   getPrinterStatus(): Promise<number>;
   paperOut(px: number): Promise<void>;
   paperBack(px: number): Promise<void>;
-  printText(text: string, textStyle: PrintextStyle): Promise<void>;
-  printText2(text: string, textStyle: PrintextStyle, textWidth: number, align: PrintAlign): Promise<void>;
+  printText(text: string, textStyle: PrintTextStyle): Promise<void>;
+  printText2(text: string, textStyle: PrintTextStyle, textWidth: number, align: PrintAlign): Promise<void>;
   printBarcode(data: string, width: number, height: number, textPosition: BarcodeTextPosition, align: PrintAlign): Promise<void>;
   printQrCode(data: string, width: number, height: number, align: PrintAlign): Promise<void>;
   printBitmap(base64Data: string, type: BitmapType, align: PrintAlign): Promise<void>;
   printRasterData(base64Data: string): Promise<void>;
   printEscposData(base64Data: string): Promise<void>;
-  printTableText(texts: string[], weights: number[], styles: PrintextStyle[]): Promise<void>;
+  printTableText(texts: string[], weights: number[], styles: PrintTextStyle[]): Promise<void>;
   printEndAutoOut(): Promise<void>;
   labelLocate(labelHeight: number, labelGap: number): Promise<void>;
   labelPrintEnd(): Promise<void>;
@@ -120,7 +120,7 @@ type NyxPrinterType = {
   configLcd(opt: LcdOpt): Promise<void>;
   showLcdBitmap(base64Data: string): Promise<void>;
   openCashBox(): Promise<void>;
-  scan(opt: ScannerOptions): Promise<void>;
+  cameraScan(opt: ScannerOptions): Promise<void>;
   qscScan(): Promise<void>;
 };
 

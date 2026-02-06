@@ -137,7 +137,7 @@ export default function App() {
 
   const _cameraScan = async () => {
     try {
-      await NyxPrinter.scan({});
+      await NyxPrinter.cameraScan({});
     } catch (e) {
       appendLog(`cameraScan: ${e}`);
     }

@@ -54,10 +54,7 @@ class NyxPrinterModule(private val reactContext: ReactApplicationContext) :
   }
 
   private fun bindService() {
-    var prefix = "net.nyx"
-    if (Build.VERSION.SDK_INT == 33 && "SC9863A" == getSystemProperty("ro.soc.model")) {
-      prefix = "com.incar"
-    }
+    val prefix = getServicePackagePrefix()
     val intent = Intent()
     intent.setPackage("$prefix.printerservice")
     intent.setAction("$prefix.printerservice.IPrinterService")
@@ -84,12 +81,8 @@ class NyxPrinterModule(private val reactContext: ReactApplicationContext) :
     val filter = IntentFilter()
     filter.addAction("com.android.NYX_QSC_DATA")
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-          reactContext.registerReceiver(
-              qscReceiver,
-              filter,
-              Context.RECEIVER_NOT_EXPORTED
-          )
+      if (Build.VERSION.SDK_INT >= 34) {
+          reactContext.registerReceiver(qscReceiver, filter, 0x2)
       } else {
           reactContext.registerReceiver(qscReceiver, filter)
       }
@@ -132,10 +125,10 @@ class NyxPrinterModule(private val reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun scan(map: ReadableMap = Arguments.createMap(), promise: Promise) {
+  fun cameraScan(map: ReadableMap = Arguments.createMap(), promise: Promise) {
     try {
       val intent = Intent()
-      intent.setComponent(ComponentName("net.nyx.scanner", "net.nyx.scanner.ScannerActivity"))
+      intent.setComponent(ComponentName("${getServicePackagePrefix()}.scanner", "net.nyx.scanner.ScannerActivity"))
       if (map.hasKey("title")) {
         // set the capture activity actionbar title
         intent.putExtra("TITLE", map.getString("title"));
@@ -347,6 +340,14 @@ class NyxPrinterModule(private val reactContext: ReactApplicationContext) :
     if (checkPrinterService(promise)) return
     val ret = printerService?.triggerQscScan()
     handleResult(ret, promise)
+  }
+
+  private fun getServicePackagePrefix(): String {
+    return if (Build.VERSION.SDK_INT == 33 && "SC9863A" == getSystemProperty("ro.soc.model")) {
+      "com.incar"
+    } else {
+      "net.nyx"
+    }
   }
 
   private fun checkPrinterService(promise: Promise): Boolean {
